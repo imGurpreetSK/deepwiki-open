@@ -855,6 +855,7 @@ IMPORTANT:
           // Handle incoming messages
           ws.onmessage = (event) => {
             responseText += event.data;
+            console.log('responseText updated:', responseText);
           };
 
           // Handle WebSocket close
@@ -915,6 +916,7 @@ IMPORTANT:
       responseText = responseText.replace(/^```(?:xml)?\s*/i, '').replace(/```\s*$/i, '');
 
       // Extract wiki structure from response
+      console.log('Reading responseText for extraction:', responseText);
       const xmlMatch = responseText.match(/<wiki_structure>[\s\S]*?<\/wiki_structure>/m);
       if (!xmlMatch) {
         throw new Error('No valid XML found in response');

@@ -380,7 +380,38 @@ def prepare_data_pipeline(is_ollama_embedder: bool = None):
     else:
         # Use batch processing for other embedders
         batch_size = embedder_config.get("batch_size", 500)
-        embedder_transformer = ToEmbeddings(
+        logger.info(f"Creating ToEmbeddings transformer with batch_size={batch_size}")
+        
+        # Create a wrapper to debug ToEmbeddings
+        class DebugToEmbeddings(ToEmbeddings):
+            def __call__(self, documents: Sequence[Document]) -> Sequence[Document]:
+                logger.info(f"HIT: ToEmbeddings called with {len(documents)} documents")
+                
+                # Log sample document before embedding
+                if documents and len(documents) > 0:
+                    logger.debug(f"HIT: Sample document before embedding: {documents[0]}")
+                    logger.debug(f"HIT: Document attributes before: {[attr for attr in dir(documents[0]) if not attr.startswith('_')]}")
+                
+                # Call parent implementation
+                result = super().__call__(documents)
+                
+                # Log sample document after embedding
+                if result and len(result) > 0:
+                    logger.info(f"HIT: ToEmbeddings returned {len(result)} documents")
+                    logger.debug(f"HIT: Sample document after embedding: {result[0]}")
+                    logger.debug(f"HIT: Document attributes after: {[attr for attr in dir(result[0]) if not attr.startswith('_')]}")
+                    
+                    # Check for vector attribute
+                    if hasattr(result[0], 'vector'):
+                        logger.info(f"HIT: Document has 'vector' attribute after embedding: {result[0].vector is not None}")
+                    else:
+                        logger.warning("HIT: Document does NOT have 'vector' attribute after ToEmbeddings!")
+                else:
+                    logger.error("HIT: ToEmbeddings returned no documents!")
+                
+                return result
+        
+        embedder_transformer = DebugToEmbeddings(
             embedder=embedder, batch_size=batch_size
         )
 
@@ -408,7 +439,40 @@ def transform_documents_and_save_to_db(
     db = LocalDB()
     db.register_transformer(transformer=data_transformer, key="split_and_embed")
     db.load(documents)
+    logger.info(f"HIT: Loaded {len(documents)} documents into database")
+    
+    # Transform documents (split and embed)
+    logger.info("HIT: Starting document transformation (split and embed)...")
     db.transform(key="split_and_embed")
+    logger.info("HIT: Document transformation complete")
+    
+    # Debug: Check if embeddings were created
+    transformed_docs = db.get_transformed_data(key="split_and_embed")
+    if transformed_docs and len(transformed_docs) > 0:
+        logger.info(f"HIT: Transformed {len(transformed_docs)} documents")
+        # Check first document for debugging
+        first_doc = transformed_docs[0]
+        logger.debug(f"HIT: First document type: {type(first_doc)}")
+        logger.debug(f"HIT: First document attributes: {[attr for attr in dir(first_doc) if not attr.startswith('_')]}")
+        
+        # Check for vector attribute
+        if hasattr(first_doc, 'vector'):
+            logger.info(f"HIT: First document has 'vector' attribute: {first_doc.vector is not None}")
+            if first_doc.vector is not None:
+                logger.info(f"HIT: First document vector type: {type(first_doc.vector)}, length: {len(first_doc.vector) if hasattr(first_doc.vector, '__len__') else 'N/A'}")
+        else:
+            logger.warning("HIT: First document does NOT have 'vector' attribute")
+            
+        # Check for other possible embedding attributes
+        for attr in ['embedding', 'embeddings', 'vec', '_embedding', 'embedded', 'embed']:
+            if hasattr(first_doc, attr):
+                value = getattr(first_doc, attr)
+                logger.warning(f"HIT: Found potential embedding attribute '{attr}': {value is not None}")
+                if value is not None:
+                    logger.warning(f"'{attr}' type: {type(value)}, length: {len(value) if hasattr(value, '__len__') else 'N/A'}")
+    else:
+        logger.error("HIT: No transformed documents found after transformation!")
+    
     os.makedirs(os.path.dirname(db_path), exist_ok=True)
     db.save_state(filepath=db_path)
     return db
