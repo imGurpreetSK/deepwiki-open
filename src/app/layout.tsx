@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { Noto_Sans_JP, Noto_Serif_JP, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from "next-themes";
-import { LanguageProvider } from "@/contexts/LanguageContext";
+import { Providers } from "@/components/Providers";
 
 // Japanese-friendly fonts
 const notoSansJP = Noto_Sans_JP({
@@ -27,6 +26,12 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Deepwiki Open Source | Sheing Ng",
   description: "Created by Sheing Ng",
+  other: {
+    // Cache control meta tags to prevent browser caching
+    'Cache-Control': 'no-cache, no-store, must-revalidate',
+    'Pragma': 'no-cache',
+    'Expires': '0',
+  },
 };
 
 export default function RootLayout({
@@ -39,11 +44,9 @@ export default function RootLayout({
       <body
         className={`${notoSansJP.variable} ${notoSerifJP.variable} ${geistMono.variable} antialiased`}
       >
-        <ThemeProvider attribute="data-theme" defaultTheme="system" enableSystem>
-          <LanguageProvider>
-            {children}
-          </LanguageProvider>
-        </ThemeProvider>
+        <Providers>
+          {children}
+        </Providers>
       </body>
     </html>
   );
