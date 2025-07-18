@@ -1916,17 +1916,18 @@ IMPORTANT:
     <div className="h-screen paper-texture p-4 md:p-8 flex flex-col">
       <style>{wikiStyles}</style>
 
-      <header className="max-w-[90%] xl:max-w-[1400px] mx-auto mb-8 h-fit w-full">
+      <header className="max-w-[95%] xl:max-w-[1600px] mx-auto mb-8 h-fit w-full">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div className="flex items-center gap-4">
             <Link href="/" className="text-[var(--accent-primary)] hover:text-[var(--highlight)] flex items-center gap-1.5 transition-colors border-b border-[var(--border-color)] hover:border-[var(--accent-primary)] pb-0.5">
               <FaHome /> {messages.repoPage?.home || 'Home'}
             </Link>
           </div>
+          <ThemeToggle />
         </div>
       </header>
 
-      <main className="flex-1 max-w-[90%] xl:max-w-[1400px] mx-auto overflow-y-auto">
+      <main className="flex-1 max-w-[95%] xl:max-w-[1600px] mx-auto overflow-y-auto">
         {isLoading ? (
           <div className="flex flex-col items-center justify-center p-8 bg-[var(--card-bg)] rounded-lg shadow-custom card-japanese">
             <div className="relative mb-6">
@@ -2118,7 +2119,7 @@ IMPORTANT:
             {/* Wiki Content */}
             <div id="wiki-content" className="w-full flex-grow p-6 lg:p-8 overflow-y-auto">
               {currentPageId && generatedPages[currentPageId] ? (
-                <div className="max-w-[900px] xl:max-w-[1000px] mx-auto">
+                <div className="max-w-[1200px] xl:max-w-[1400px] mx-auto">
                   <h3 className="text-xl font-bold text-[var(--foreground)] mb-4 break-words font-serif">
                     {generatedPages[currentPageId].title}
                   </h3>
@@ -2182,7 +2183,7 @@ IMPORTANT:
       {!isLoading && wikiStructure && (
         <button
           onClick={() => setIsAskModalOpen(true)}
-          className="fixed bottom-6 right-6 w-14 h-14 rounded-full bg-[var(--accent-primary)] text-white shadow-lg flex items-center justify-center hover:bg-[var(--accent-primary)]/90 transition-all z-50"
+          className="fixed bottom-6 right-6 w-36 h-18 rounded-full bg-[var(--accent-primary)] text-white shadow-lg flex items-center justify-center hover:bg-[var(--accent-primary)]/90 transition-all z-50"
           aria-label={messages.ask?.title || 'Ask about this repository'}
         >
           <FaComments className="text-xl" />

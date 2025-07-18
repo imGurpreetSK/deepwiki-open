@@ -392,7 +392,7 @@ export default function Home() {
 
   return (
     <div className="h-screen paper-texture p-4 md:p-8 flex flex-col">
-      <header className="max-w-6xl mx-auto mb-6 h-fit w-full">
+      <header className="max-w-7xl mx-auto mb-6 h-fit w-full">
         <div
           className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-[var(--card-bg)] rounded-lg shadow-custom border border-[var(--border-color)] p-4">
           <div className="flex items-center">
@@ -481,7 +481,7 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="flex-1 max-w-6xl mx-auto w-full overflow-y-auto">
+      <main className="flex-1 max-w-7xl mx-auto w-full overflow-y-auto">
         <div
           className="min-h-full flex flex-col items-center p-8 pt-10 bg-[var(--card-bg)] rounded-lg shadow-custom card-japanese">
 
