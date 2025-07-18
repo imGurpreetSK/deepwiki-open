@@ -1,22 +1,23 @@
-import adalflow as adal
-from adalflow.core.types import Document, List
-from adalflow.components.data_process import TextSplitter, ToEmbeddings
+import base64
+import glob
+import json
+import logging
 import os
 import subprocess
-import json
-import tiktoken
-import logging
-import base64
-import re
-import glob
-from adalflow.utils import get_adalflow_default_root_path
-from adalflow.core.db import LocalDB
-from api.config import configs, DEFAULT_EXCLUDED_DIRS, DEFAULT_EXCLUDED_FILES
-from api.ollama_patch import OllamaDocumentProcessor
+from typing import Sequence
 from urllib.parse import urlparse, urlunparse, quote
+
+import adalflow as adal
 import requests
+import tiktoken
+from adalflow.components.data_process import TextSplitter, ToEmbeddings
+from adalflow.core.db import LocalDB
+from adalflow.core.types import Document, List
+from adalflow.utils import get_adalflow_default_root_path
 from requests.exceptions import RequestException
 
+from api.config import configs, DEFAULT_EXCLUDED_DIRS, DEFAULT_EXCLUDED_FILES
+from api.ollama_patch import OllamaDocumentProcessor
 from api.tools.embedder import get_embedder
 
 # Configure logging
