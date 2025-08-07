@@ -800,10 +800,12 @@ IMPORTANT FORMATTING INSTRUCTIONS:
 - Start directly with <wiki_structure> and end with </wiki_structure>
 
 IMPORTANT:
-1. Create ${isComprehensiveView ? '8-12' : '4-6'} pages that would make a ${isComprehensiveView ? 'comprehensive' : 'concise'} wiki for this repository
+1. Create ${isComprehensiveView ? '18-108' : '6-36'} pages that would make a ${isComprehensiveView ? 'comprehensive' : 'concise'} wiki for this repository
 2. Each page should focus on a specific aspect of the codebase (e.g., architecture, key features, setup)
 3. The relevant_files should be actual files from the repository that would be used to generate that page
-4. Return ONLY valid XML with the structure specified above, with no markdown code block delimiters`
+4. Return ONLY valid XML with the structure specified above, with no markdown code block delimiters
+5. Do NOT include false information about the codebase
+`
         }]
       };
 
@@ -857,6 +859,7 @@ IMPORTANT:
           // Handle incoming messages
           ws.onmessage = (event) => {
             responseText += event.data;
+            console.log('responseText updated:', responseText);
           };
 
           // Handle WebSocket close
@@ -917,6 +920,7 @@ IMPORTANT:
       responseText = responseText.replace(/^```(?:xml)?\s*/i, '').replace(/```\s*$/i, '');
 
       // Extract wiki structure from response
+      console.log('Reading responseText for extraction:', responseText);
       const xmlMatch = responseText.match(/<wiki_structure>[\s\S]*?<\/wiki_structure>/m);
       if (!xmlMatch) {
         throw new Error('No valid XML found in response');
@@ -1916,17 +1920,18 @@ IMPORTANT:
     <div className="h-screen paper-texture p-4 md:p-8 flex flex-col">
       <style>{wikiStyles}</style>
 
-      <header className="max-w-[90%] xl:max-w-[1400px] mx-auto mb-8 h-fit w-full">
+      <header className="max-w-[95%] xl:max-w-[1600px] mx-auto mb-8 h-fit w-full">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div className="flex items-center gap-4">
             <Link href="/" className="text-[var(--accent-primary)] hover:text-[var(--highlight)] flex items-center gap-1.5 transition-colors border-b border-[var(--border-color)] hover:border-[var(--accent-primary)] pb-0.5">
               <FaHome /> {messages.repoPage?.home || 'Home'}
             </Link>
           </div>
+          <ThemeToggle />
         </div>
       </header>
 
-      <main className="flex-1 max-w-[90%] xl:max-w-[1400px] mx-auto overflow-y-auto">
+      <main className="flex-1 max-w-[95%] xl:max-w-[1600px] mx-auto overflow-y-auto">
         {isLoading ? (
           <div className="flex flex-col items-center justify-center p-8 bg-[var(--card-bg)] rounded-lg shadow-custom card-japanese">
             <div className="relative mb-6">
@@ -2118,7 +2123,7 @@ IMPORTANT:
             {/* Wiki Content */}
             <div id="wiki-content" className="w-full flex-grow p-6 lg:p-8 overflow-y-auto">
               {currentPageId && generatedPages[currentPageId] ? (
-                <div className="max-w-[900px] xl:max-w-[1000px] mx-auto">
+                <div className="max-w-[1200px] xl:max-w-[1400px] mx-auto">
                   <h3 className="text-xl font-bold text-[var(--foreground)] mb-4 break-words font-serif">
                     {generatedPages[currentPageId].title}
                   </h3>
@@ -2169,20 +2174,11 @@ IMPORTANT:
         ) : null}
       </main>
 
-      <footer className="max-w-[90%] xl:max-w-[1400px] mx-auto mt-8 flex flex-col gap-4 w-full">
-        <div className="flex justify-between items-center gap-4 text-center text-[var(--muted)] text-sm h-fit w-full bg-[var(--card-bg)] rounded-lg p-3 shadow-sm border border-[var(--border-color)]">
-          <p className="flex-1 font-serif">
-            {messages.footer?.copyright || 'DeepWiki - Generate Wiki from GitHub/Gitlab/Bitbucket repositories'}
-          </p>
-          <ThemeToggle />
-        </div>
-      </footer>
-
       {/* Floating Chat Button */}
       {!isLoading && wikiStructure && (
         <button
           onClick={() => setIsAskModalOpen(true)}
-          className="fixed bottom-6 right-6 w-14 h-14 rounded-full bg-[var(--accent-primary)] text-white shadow-lg flex items-center justify-center hover:bg-[var(--accent-primary)]/90 transition-all z-50"
+          className="fixed bottom-6 right-6 w-36 h-18 rounded-full bg-[var(--accent-primary)] text-white shadow-lg flex items-center justify-center hover:bg-[var(--accent-primary)]/90 transition-all z-50"
           aria-label={messages.ask?.title || 'Ask about this repository'}
         >
           <FaComments className="text-xl" />
