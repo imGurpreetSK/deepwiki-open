@@ -126,7 +126,7 @@ export default function LoginPage() {
                 {/* Additional Info */}
                 <div className="mt-6 text-center">
                     <p className="text-sm text-[var(--muted)]">
-                        By signing in, you agree to use DeepWiki in accordance with your organization's policies
+                        By signing in, you agree to use DeepWiki in accordance with JobGet&apos;s policies
                     </p>
                 </div>
             </div>
